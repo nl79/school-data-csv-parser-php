@@ -12,8 +12,12 @@ try {
 	echo($e->getMessage()); 
 }
 
+//$names = $listcsv->getFieldsByName('instnm'); 
+
 echo("<pre>"); 
 print_r($headingcsv->getHeadings());
+//print_r($names); 
+print_r($listcsv->getData()); 
 echo("</pre>"); 
 
 ?>

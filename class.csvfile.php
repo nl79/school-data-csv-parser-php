@@ -9,7 +9,7 @@ class csvfile {
 	
 	private $_headings = null; 		#array containing the headings if exist. 
 	
-	private $_data = array(); 		#array containing the data rows. 
+	private $_data = null; 		#array containing the data rows. 
 
 	public function __construct($filepath, $headings = false) {
 	
@@ -40,7 +40,65 @@ class csvfile {
 	public function getData() {
 		return $this->_data; 
 	}
-
+	
+	
+	/*
+	 *@method getFieldByName() - returns every value of the field which match the supplied filed name.
+	 *@access public
+	 *@param String $name - Field name as string
+	 *@param Int $limit - limit the result set. (at lest 1 result will be returned)
+	 *@return array = returns an empty array on failure. 
+	 */
+	public function getFieldsByName($name, $limit = null) {
+		
+		#result array. 
+		$result = array(); 
+		
+		#result count
+		$count = 0; 
+		
+		#validate the value
+		if(!is_string($name) || empty($name)) { return $result; }
+		
+		#conver to lower case
+		$name = strtolower($name); 
+		
+	
+		/*
+		 *loop through each data item and
+		 *extract the field matching the supplied value.
+		 */
+		
+		if(!is_null($this->_data)) {
+			#loop throught each array element 
+			foreach($this->_data as $row) {
+				
+				#loop through each element in the row array. 
+				foreach($row as $key => $value) {
+					
+					if(strtolower($key) == $name) {
+						
+						#add the value to the result array. 
+						$result[] = $value;
+						
+						#update the count
+						$count++; 
+					}
+					
+					#check if the limit is equalt to the count. 
+					if(is_numeric($limit) && $limit == $count) {
+						
+						#return the result array. 
+						return $result; 
+					}
+				}
+			}
+		}
+		
+		#return the result array. 
+		return $result; 
+	}
+	
 	/*
 	/@method loadFile() - Validate that the csv file exists and build the array. 
 	/@return Boolean - returns true on success or false on failure. 
