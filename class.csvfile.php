@@ -29,7 +29,8 @@ class csvfile {
 	*/
 	private function loadFile() {
 		#check if the file exists 
-		if(is_string($this->_filepath) && 
+		if(!is_null($this->_filepath) &&
+			is_string($this->_filepath) && 
 			file_exists($this->_filepath) &&
 			is_file($this->_filepath)) {
 			
@@ -67,6 +68,10 @@ class csvfile {
 				
 			}
 
+		} else {
+			#throw an exception 
+			throw new Exception('Invalid Filepath supplied: ' . $this->_filepath); 
+			return null; 
 		}
 	}
 }
