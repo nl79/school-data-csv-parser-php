@@ -16,11 +16,29 @@ class csvfile {
 			#validate the filepath and headings.  
 			$this->_filepath = is_string($filepath) && !empty($filepath) ? $filepath : null;
 			
-			$this->_headExists = is_boolean($headings) ? $headings : false;  
+			$this->_headExists = is_bool($headings) ? $headings : false;  
 			
 			#load the csv file
 			$this->loadFile(); 
 	
+	}
+	
+	/*
+	 *@method getHeadings() - returns the headings array
+	 *@access public
+	 *@return Mixed - returns an array on success or null on failure
+	 */
+	public function getHeadings() {
+		return $this->_headings; 
+	}
+	
+	/*
+	 *@method getData() - returns the data array.
+	 *@access public
+	 *@return Mixed - returns an array on success or null on failure
+	 */
+	public function getData() {
+		return $this->_data; 
 	}
 
 	/*
@@ -28,6 +46,9 @@ class csvfile {
 	/@return Boolean - returns true on success or false on failure. 
 	*/
 	private function loadFile() {
+		
+		ini_set('auto_detect_line_endings',TRUE);
+		
 		#check if the file exists 
 		if(!is_null($this->_filepath) &&
 			is_string($this->_filepath) && 
@@ -50,10 +71,12 @@ class csvfile {
 					$this->_headings = $row; 
 					
 					#set the read flag to true
-					$hRead = true; 
+					$hRead = true;
+					
 				} else {
+					
 					#if the heading is set combine the row and head array. 
-					if($this->headExists && 
+					if($this->_headExists && 
 						is_array($this->_headings) && 
 						!empty($this->_headings)) {
 					
