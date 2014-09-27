@@ -1,0 +1,16 @@
+body {
+    padding: 25px; 
+}
+
+#div-school-list {
+    border: 1px solid gray; 
+    max-height: 550px;
+    width: 400px; 
+    overflow-y: scroll;
+    float: left; 
+}
+
+#div-school-data {
+    border: 1px solid red;
+    margin-left: 410px; 
+}

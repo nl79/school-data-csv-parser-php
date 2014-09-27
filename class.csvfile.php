@@ -41,9 +41,40 @@ class csvfile {
 		return $this->_data; 
 	}
 	
+	/*
+	 *@method selectRow($key, $value) - returns the value associted with the given key
+	 *@access public
+	 *@param String $key - Field name as String
+	 *@param Scalar $value - Field value as String or Number. 
+	 *@return Mixed - returns an empty array if no matches found. 
+	 */
+	public function selectRow($key, $value) {
+		
+		#validate the key and the value.
+		if(!is_string($key) || !is_scalar($value)) {
+			return null; 
+		}
+		
+		#loop throught the data and match the key with the value.
+		foreach($this->_data as $row) {
+			
+			#loop through each row
+			foreach($row as $rKey => $rValue) {
+				
+				#check if the key and value matches the parameters. 
+				if($rKey == $key && $rValue == $value) {
+					
+					#return the row. 
+					return $row; 
+				}
+			}
+		}
+		
+		return array(); 
+	}
 	
 	/*
-	 *@method getFieldByName() - returns every value of the field which match the supplied filed name.
+	 *@method getFieldsByName() - returns every value of the field which match the supplied filed name.
 	 *@access public
 	 *@param String $name - Field name as string
 	 *@param Int $limit - limit the result set. (at lest 1 result will be returned)
