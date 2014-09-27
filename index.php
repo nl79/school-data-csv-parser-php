@@ -1,6 +1,8 @@
 <?php
 #require the csvfile class. 
-require_once('class.csvfile.php'); 
+require_once('class.csvfile.php');
+#require the cache class
+require_once('class.cache.php'); 
 
 $start = microtime(true);
 
@@ -9,24 +11,26 @@ $listFile = './data/hd2013.csv';
 $headingsFile = './data/hd2013varlist.csv';
 
 #cache filenames
-$listFileCache = './cache/hd2013.cache.json';
-$headingsFileCache = './cache/hd2013varlist.cache.json';
+$cacheDir = './cache/'; 
+$listFileCache = 'hd2013.cache.json';
+$headingsFileCache = 'hd2013varlist.cache.json';
 
-$ulHmlFile = './cache/schoolListUl.html'; 
+$ulHmlFile = 'schoolListUl.html'; 
 
+$cache = new cache($cacheDir); 
 
 $schoolList = null;
 $headingList = null; 
 
 #check if the files are cached
-if(file_exists($listFileCache) &&
-   file_exists($headingsFileCache)) {
+if(file_exists($cacheDir . $listFileCache) &&
+   file_exists($cacheDir . $headingsFileCache)) {
 	#open the files and decode json.
-	$schoolList = json_decode(file_get_contents($listFileCache), true);
-	$headingList = json_decode(file_get_contents($headingsFileCache), true);
-	
+	$schoolList = $cache->getJsonData($listFileCache);
+	$headingList = $cache->getJsonData($headingsFileCache); 
+
 } else {
-	
+
 	#open the files.
 	try {
 		
@@ -40,34 +44,18 @@ if(file_exists($listFileCache) &&
 		
 		$headingList = $headingcsv->getData(); 
 		
-		
 		#if the files were opened and loaded successfully, cache the csv objects.
 		#encode json
-		$listJson = json_encode($schoolList);
-		
-		file_put_contents($listFileCache, $listJson);
-		
-		#unset the cacheFile
-		unset($listJson);
-		
-		$headingsJson = json_encode($headingList);
-		
-		file_put_contents($headingsFileCache, $headingsJson);
-		
-		unset($headingsJson);
+		$cache->cacheJson($listFileCache, $schoolList); 
+		$cache->cacheJson($headingsFileCache, $headingList); 
 		
 		#build the UL and cache it as html.
-		$ulHtml = buildUL($schoolList);
-		
-		file_put_contents($ulHmlFile, $ulHtml); 
-		
+		$cache->cacheHtml($ulHmlFile, buildUL($schoolList)); 
 		
 	} catch (Exception $e) {
 		echo($e->getMessage()); 
 	}
 }
-
-
 
 #if the unitid is set, load the headings svc
 if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
@@ -76,7 +64,6 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	$id = $_REQUEST['UNITID'];
 	
 	//get the school record based on the unitid
-	//$record = $listcsv->selectRow('UNITID', $id);
 	
 	$record = null;
 	
@@ -124,27 +111,24 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	#if record was found, build the table
 	if($record) {
 		$tableHtml = "";
-		$tableHtml .= "<table id='table-school-data' border='1'>";
+		$tableHtml .= "<table id='table-school-data' border='1'>" .
 			
-		$tableHtml .= "<thead><tr><th>Field Name</th><th>Field Value</th></tr></thead>";
+			"<thead><tr><th>Field Name</th><th>Field Value</th></tr></thead>" .
 	
-		$tableHtml .= "<tbody>";
-			$count = 0;
-			 
-			foreach($record as $item) {
-				$tableHtml .= '<tr>';
-				$tableHtml .= "<td class='td-name'>" . $headingList[$count]['varTitle'] . '</td>'; 
-				$tableHtml .= "<td class='td-value'>" . $item . '</td>';
-				$tableHtml .= '</tr>';
-				$count++; 
-			}
+			"<tbody>";
 		
-		$tableHtml .= "</tbody>";
-		
-		$tableHtml .= "<tfoot>";
-		$tableHtml .= "</tfoot>";
-		
-		$tableHtml .= "</table>";
+		#field count to keep the headings in synch with the fields. 
+		$count = 0;
+		 
+		foreach($record as $item) {
+			$tableHtml .= '<tr>';
+			$tableHtml .= "<td class='td-name'>" . $headingList[$count]['varTitle'] . '</td>'; 
+			$tableHtml .= "<td class='td-value'>" . $item . '</td>';
+			$tableHtml .= '</tr>';
+			$count++; 
+		}
+				
+		$tableHtml .= "</tbody><tfoot></tfoot></table>";
 		
 		#check if its an ajax call, if so, echo the table.
 		if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
@@ -155,9 +139,7 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	}
 }
 
-$end = microtime(true);
-
-echo($end - $start);
+echo(microtime(true) - $start);
 
 
 
@@ -193,7 +175,7 @@ function buildUL($list) {
 	<body>
 		<h1>School List</h1>
 		<div id='div-school-list'>
-			<?php if(file_exists($ulHmlFile)) { include($ulHmlFile); } ?>
+			<?php if(file_exists($cacheDir . $ulHmlFile)) { include($cacheDir . $ulHmlFile); } ?>
 			
 		</div>
 		
