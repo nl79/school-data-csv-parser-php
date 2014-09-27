@@ -192,6 +192,9 @@ class csvfile {
 				}
 				
 			}
+			
+			#close the file
+			fclose($file); 
 
 		} else {
 			#throw an exception 
