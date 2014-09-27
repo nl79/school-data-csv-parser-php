@@ -91,7 +91,7 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	<head>
 		<title>IS218 Programming Challenge 1</title>
 		
-		<link rel='stylesheet' type='text/css' href='/styles/main.css' />
+		<link rel='stylesheet' type='text/css' href='./styles/main.css' />
 	</head>
 	
 	<body>
@@ -100,7 +100,7 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 			<ul id='ul-school-list'>
 				<?php foreach($rows = $listcsv->getData() as $row) { ?>
 					<li id='li-item'>
-						<a href="/?UNITID=<?php echo($row['UNITID']); ?>">
+						<a href="./?UNITID=<?php echo($row['UNITID']); ?>">
 							<?php echo($row['INSTNM']); ?>
 						</a>
 					</li>
