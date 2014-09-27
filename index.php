@@ -30,14 +30,29 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	
 	//$record = array_combine($headingcsv->getData(), $record);
 	
-	echo("<pre>");
-	print_r($headingcsv->getData()); 
-	print_r($record); 
-	echo("</pre>"); 
+	$tableHtml = "";
+	$tableHtml .= "<table id='table-school-data' border='1'>";
+	$tableHtml .= "<thead>";
+	$tableHtml .= "<tr>"; 
+		foreach($headings = $headingcsv->getData() as $row) {
+			$tableHtml .= "<th>" . $row['varTitle'] . "</th>"; 
+		}
+	$tableHtml .= "</tr>"; 
+	$tableHtml .= "</thead>";
 	
+	$tableHtml .= "<tbody>";
+	$tableHtml .= "<tr>"; 
+		foreach($record as $item) {
+			$tableHtml .= "<td>" . $item . "</td>"; 
+		}
+	$tableHtml .= "</tr>"; 
+	$tableHtml .= "</tbody>";
+	
+	$tableHtml .= "<tfoot>";
+	$tableHtml .= "</tfoot>";
+	
+	$tableHtml .= "</table>"; 
 }
-
-
 
 ?>
 
@@ -54,7 +69,7 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 		<h1>School List</h1>
 		<div id='div-school-list'>
 			<ul id='ul-school-list'>
-				<?php foreach($listcsv->getData() as $row) { ?>
+				<?php foreach($rows = $listcsv->getData() as $row) { ?>
 					<li id='li-item'>
 						<a href="/?UNITID=<?php echo($row['UNITID']); ?>">
 							<?php echo($row['INSTNM']); ?>
@@ -65,7 +80,7 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 		</div>
 		
 		<div id='div-school-data'>
-			
+			<?php if(isset($tableHtml)) { echo($tableHtml); } ?>
 		</div>
 		
 	</body>
