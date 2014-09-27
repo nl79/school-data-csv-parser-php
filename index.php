@@ -145,6 +145,12 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 		$tableHtml .= "</tfoot>";
 		
 		$tableHtml .= "</table>";
+		
+		#check if its an ajax call, if so, echo the table.
+		if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
+			echo($tableHtml);
+			exit; 
+		}
 	
 	}
 }
@@ -163,7 +169,7 @@ function buildUL($list) {
 	
 	foreach($list as $row) {
 		
-		$html .= "<li id='li-item'><a href=./?UNITID=" . $row['UNITID'] . ">" . $row['INSTNM'] . "</a></li>";
+		$html .= "<li class='li-item'><a href=./?UNITID=" . $row['UNITID'] . ">" . $row['INSTNM'] . "</a></li>";
 		
 	}
 	
@@ -181,6 +187,7 @@ function buildUL($list) {
 		<title>IS218 Programming Challenge 1</title>
 		
 		<link rel='stylesheet' type='text/css' href='./styles/main.css' />
+		<script type='text/javascript' src='./js/main.js'></script>
 	</head>
 	
 	<body>
