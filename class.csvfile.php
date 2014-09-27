@@ -42,6 +42,19 @@ class csvfile {
 	}
 	
 	/*
+	 *@method length() - returns the number of elements in the data array.
+	 *@access public
+	 *@return Int - number of elements in the data array.
+	 */
+	public function length() {
+		if(is_null($this->_data)) {
+			return 0; 
+		} else {
+			return count($this->_data); 
+		}
+	}
+	
+	/*
 	 *@method selectRow($key, $value) - returns the value associted with the given key
 	 *@access public
 	 *@param String $key - Field name as String

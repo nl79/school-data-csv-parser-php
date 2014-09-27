@@ -29,13 +29,14 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	$record = $listcsv->selectRow('UNITID', $id);
 	
 	//$record = array_combine($headingcsv->getData(), $record);
-	
+	/*
 	$tableHtml = "";
 	$tableHtml .= "<table id='table-school-data' border='1'>";
+		
 	$tableHtml .= "<thead>";
 	$tableHtml .= "<tr>"; 
 		foreach($headings = $headingcsv->getData() as $row) {
-			$tableHtml .= "<th>" . $row['varTitle'] . "</th>"; 
+			$tableHtml .= "<th class='cell'>" . $row['varTitle'] . "</th>"; 
 		}
 	$tableHtml .= "</tr>"; 
 	$tableHtml .= "</thead>";
@@ -51,7 +52,35 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	$tableHtml .= "<tfoot>";
 	$tableHtml .= "</tfoot>";
 	
-	$tableHtml .= "</table>"; 
+	$tableHtml .= "</table>";
+	*/
+	
+	#if record was found, build the table
+	if($record) {
+		$tableHtml = "";
+		$tableHtml .= "<table id='table-school-data' border='1'>";
+			
+		$tableHtml .= "<thead><tr><th>Field Name</th><th>Field Value</th></tr></thead>";
+	
+		$tableHtml .= "<tbody>";
+			$count = 0;
+			$headings = $headingcsv->getData(); 
+			foreach($record as $item) {
+				$tableHtml .= '<tr>';
+				$tableHtml .= "<td class='td-name'>" . $headings[$count]['varTitle'] . '</td>'; 
+				$tableHtml .= "<td class='td-value'>" . $item . '</td>';
+				$tableHtml .= '</tr>';
+				$count++; 
+			}
+		
+		$tableHtml .= "</tbody>";
+		
+		$tableHtml .= "<tfoot>";
+		$tableHtml .= "</tfoot>";
+		
+		$tableHtml .= "</table>";
+	
+	}
 }
 
 ?>

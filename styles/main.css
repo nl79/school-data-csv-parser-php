@@ -1,20 +1,26 @@
 body {
-    padding: 25px; 
+    padding: 20px; 
 }
 
 #div-school-list {
-    border: 1px solid gray; 
-    max-height: 550px;
-    width: 400px; 
+    max-height: 500px;
+    width: 35%; 
     overflow-y: scroll;
     float: left; 
 }
 
 #div-school-data {
-    border: 1px solid red;
-    margin-left: 410px; 
+    max-height: 500px; 
+    margin-left: 36%;
+    width: 55%; 
+    overflow-y: scroll
 }
 
 table#table-school-data {
     border-collapse: collapse;
+}
+
+table#table-school-data td {
+    padding: 5px;
+    
 }
