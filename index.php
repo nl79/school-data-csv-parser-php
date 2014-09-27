@@ -60,53 +60,20 @@ if(file_exists($cacheDir . $listFileCache) &&
 #if the unitid is set, load the headings svc
 if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	
+	$fieldName = 'UNITID'; 
+	
 	#get the unit id. 
-	$id = $_REQUEST['UNITID'];
+	$id = $_REQUEST[$fieldName];
 	
 	//get the school record based on the unitid
 	
 	$record = null;
-	
+
 	#loop throught the data and match the key with the value.
 	foreach($schoolList as $row) {
 		
-		#loop through each row
-		foreach($row as $rKey => $rValue) {
-			
-			#check if the key and value matches the parameters. 
-			if($rKey == 'UNITID' && $rValue == $id) {
-				 
-				$record = $row; 
-			}
-		}
+		if($row[$fieldName] == $id) { $record = $row; }
 	}
-	
-	//$record = array_combine($headingcsv->getData(), $record);
-	/*
-	$tableHtml = "";
-	$tableHtml .= "<table id='table-school-data' border='1'>";
-		
-	$tableHtml .= "<thead>";
-	$tableHtml .= "<tr>"; 
-		foreach($headings = $headingcsv->getData() as $row) {
-			$tableHtml .= "<th class='cell'>" . $row['varTitle'] . "</th>"; 
-		}
-	$tableHtml .= "</tr>"; 
-	$tableHtml .= "</thead>";
-	
-	$tableHtml .= "<tbody>";
-	$tableHtml .= "<tr>"; 
-		foreach($record as $item) {
-			$tableHtml .= "<td>" . $item . "</td>"; 
-		}
-	$tableHtml .= "</tr>"; 
-	$tableHtml .= "</tbody>";
-	
-	$tableHtml .= "<tfoot>";
-	$tableHtml .= "</tfoot>";
-	
-	$tableHtml .= "</table>";
-	*/
 	
 	#if record was found, build the table
 	if($record) {
@@ -125,14 +92,19 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 			$tableHtml .= "<td class='td-name'>" . $headingList[$count]['varTitle'] . '</td>'; 
 			$tableHtml .= "<td class='td-value'>" . $item . '</td>';
 			$tableHtml .= '</tr>';
+			
+			#INCREMENT COUNT
 			$count++; 
 		}
 				
 		$tableHtml .= "</tbody><tfoot></tfoot></table>";
 		
+		#add the timer.
+		$timerHeading = "<h3>Table Generated In: " . (microtime(true) - $start) . "</h3>";
+		
 		#check if its an ajax call, if so, echo the table.
 		if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
-			echo($tableHtml);
+			echo($timerHeading . $tableHtml);
 			exit; 
 		}
 	
