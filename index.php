@@ -12,6 +12,8 @@ $headingsFile = './data/hd2013varlist.csv';
 $listFileCache = './cache/hd2013.cache.json';
 $headingsFileCache = './cache/hd2013varlist.cache.json';
 
+$ulHmlFile = './cache/schoolListUl.html'; 
+
 
 $schoolList = null;
 $headingList = null; 
@@ -53,6 +55,11 @@ if(file_exists($listFileCache) &&
 		file_put_contents($headingsFileCache, $headingsJson);
 		
 		unset($headingsJson);
+		
+		#build the UL and cache it as html.
+		$ulHtml = buildUL($schoolList);
+		
+		file_put_contents($ulHmlFile, $ulHtml); 
 		
 		
 	} catch (Exception $e) {
@@ -149,6 +156,7 @@ echo($end - $start);
 
 
 function buildUL($list) {
+	
 	$html = '';
 	
 	$html .= "<ul id='ul-school-list'>"; 
@@ -178,15 +186,8 @@ function buildUL($list) {
 	<body>
 		<h1>School List</h1>
 		<div id='div-school-list'>
-			<ul id='ul-school-list'>
-				<?php foreach($schoolList as $row) { ?>
-					<li id='li-item'>
-						<a href="./?UNITID=<?php echo($row['UNITID']); ?>">
-							<?php echo($row['INSTNM']); ?>
-						</a>
-					</li>
-				<?php } ?>
-			</ul>
+			<?php if(file_exists($ulHmlFile)) { include($ulHmlFile); } ?>
+			
 		</div>
 		
 		<div id='div-school-data'>
