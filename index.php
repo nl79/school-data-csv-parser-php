@@ -1,8 +1,10 @@
 <?php
 #require the csvfile class. 
-require_once('class.csvfile.php');
+require_once('./lib/class.csvfile.php');
 #require the cache class
-require_once('class.cache.php'); 
+require_once('./lib/class.cache.php');
+#require the html builder class
+require_once('./lib/class.html.php'); 
 
 $start = microtime(true);
 
@@ -38,7 +40,7 @@ if(file_exists($cacheDir . $listFileCache) &&
 		$listcsv = new csvfile($listFile, true);
 		
 		$schoolList = $listcsv->getData(); 
-		
+
 		#load the headings csv. 
 		$headingcsv = new csvfile($headingsFile, true);
 		
@@ -65,10 +67,9 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	#get the unit id. 
 	$id = $_REQUEST[$fieldName];
 	
-	//get the school record based on the unitid
-	
+	//get the school record based on the unitid 
 	$record = null;
-
+ 
 	#loop throught the data and match the key with the value.
 	foreach($schoolList as $row) {
 		
@@ -116,14 +117,23 @@ echo(microtime(true) - $start);
 
 
 function buildUL($list) {
-	
 	$html = '';
 	
 	$html .= "<ul id='ul-school-list'>"; 
 	
 	foreach($list as $row) {
-		
-		$html .= "<li class='li-item'><a href=./?UNITID=" . $row['UNITID'] . ">" . $row['INSTNM'] . "</a></li>";
+	
+		/*
+		$html .= "<li class='li-item'>" .
+			html::a(array('href' => "./?UNITID=" . $row['UNITID'],
+				      'data' => $row['INSTNM'])) . "</li>";
+		*/
+		#build the anchor tag.
+		$a = html::a(array('href' => "./?UNITID=" . $row['UNITID'],
+				      'data' => $row['INSTNM']));
+		$li = html::li(array('class' => 'li-item',
+				     'data' => $a)); 
+		$html .= $li; 
 		
 	}
 	
