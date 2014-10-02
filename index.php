@@ -1,8 +1,12 @@
 <?php
+#set errors reporting
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(-1);
+
 #require the csvfile class. 
 require_once('lib/class.csvfile.php');
-#require the cache class
-require_once('lib/class.cache.php');
+
 #require the html builder class
 require_once('lib/class.html.php'); 
 
@@ -12,55 +16,7 @@ $start = microtime(true);
 $listFile = 'data/hd2013.csv'; 
 $headingsFile = 'data/hd2013varlist.csv';
 
-#cache filenames
-$cacheDir = 'cache/'; 
-$listFileCache = 'hd2013.cache.json';
-$headingsFileCache = 'hd2013varlist.cache.json';
-
-$ulHmlFile = 'schoolListUl.html'; 
-
-$cache = new cache($cacheDir); 
-
-$schoolList = null;
-$headingList = null; 
-
-/*
-#check if the files are cached
-if(file_exists($cacheDir . $listFileCache) &&
-   file_exists($cacheDir . $headingsFileCache)) {
-	#open the files and decode json.
-	$schoolList = $cache->getJsonData($listFileCache);
-	$headingList = $cache->getJsonData($headingsFileCache);
-	
-} else {
-
-	#open the files.
-	try {
-		
-		#load the list csv. 
-		$listcsv = new csvfile($listFile, true);
-		
-		$schoolList = $listcsv->getData();
-		
-		#load the headings csv. 
-		$headingcsv = new csvfile($headingsFile, true);
-		
-		$headingList = $headingcsv->getData(); 
-		
-		#if the files were opened and loaded successfully, cache the csv objects.
-		#encode json
-		$cache->cacheJson($listFileCache, $schoolList); 
-		$cache->cacheJson($headingsFileCache, $headingList); 
-		
-		#build the UL and cache it as html.
-		$cache->cacheHtml($ulHmlFile, buildUL($schoolList)); 
-		
-	} catch (Exception $e) {
-		echo($e->getMessage()); 
-	}
-}
-*/
-#load the list csv. 
+#load the school list csv. 
 $listcsv = new csvfile($listFile, true);
 $schoolList = $listcsv->getData();
 	
@@ -68,10 +24,10 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	
 	#load the headings csv. 
 	$headingcsv = new csvfile($headingsFile, true);
-	$headingList = $headingcsv->getData();
+	//$headingList = $headingcsv->getData();
 	
-	
-	#if the unitid is set, load the headings svc
+	#extract every varTitle field from the headings collection
+	$headings = $headingcsv->getFieldsByName('varTitle'); 
 	
 	$fieldName = 'UNITID'; 
 	
@@ -81,51 +37,41 @@ if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
 	//get the school record based on the unitid 
 	$record = null;
  
-	#loop throught the data and match the key with the value.
+	#loop throught and find the record. 
 	foreach($schoolList as $row) {
 		
 		if($row[$fieldName] == $id) { $record = $row; }
 	}
 	
-	#if record was found, build the table
-	if($record) {
-		$tableHtml = "";
-		$tableHtml .= "<table id='table-school-data' border='1'>" .
+	#merge the record and the headings into a single array. 
+	if(!empty($record) && !empty($headings)) {
+		$dataArray = array(); 
+		
+		#get the row count. 
+		$count = count($record);
+		
+		#loop and merge the arrays. 
+		for($i = 0; $i < $count; $i++ ) {
 			
-			"<thead><tr><th>Field Name</th><th>Field Value</th></tr></thead>" .
-	
-			"<tbody>";
-		
-		#field count to keep the headings in synch with the fields. 
-		$count = 0;
-		 
-		foreach($record as $item) {
-			$tableHtml .= '<tr>';
-			$tableHtml .= "<td class='td-name'>" . $headingList[$count]['varTitle'] . '</td>'; 
-			$tableHtml .= "<td class='td-value'>" . $item . '</td>';
-			$tableHtml .= '</tr>';
-			
-			#INCREMENT COUNT
-			$count++; 
+			#build a new array and add it to the dataArray
+			$dataArray[] = array(array_shift($headings) , array_shift($record)); 
 		}
-				
-		$tableHtml .= "</tbody><tfoot></tfoot></table>";
 		
-		#add the timer.
-		$timerHeading = "<h3>Table Generated In: " . (microtime(true) - $start) . "</h3>";
-		
-		#check if its an ajax call, if so, echo the table.
-		if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
-			echo($timerHeading . $tableHtml);
-			exit; 
-		}
+		//build the table html
+		$tableHtml = html::table(array('id'=>'table-school-data',
+				   'border' => '1',
+				   'data' => $dataArray), 'h');
+	}
 	
+	
+	#check if its an ajax call, if so, echo the table.
+	if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
+		echo($tableHtml);
+		exit; 
 	}
 }
 
 echo(microtime(true) - $start);
-
-
 
 function buildUL($list) {
 	$html = '';
@@ -163,7 +109,7 @@ function buildUL($list) {
 	<body>
 		<h1>School List</h1>
 		<div id='div-school-list'>
-			<?php #if(file_exists($cacheDir . $ulHmlFile)) { include($cacheDir . $ulHmlFile); }
+			<?php 
 				#build the ul
 				echo(buildUL($schoolList)); 
 			?>

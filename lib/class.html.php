@@ -24,9 +24,37 @@ class html {
         return $html; 
     }
     
-    public static function table($args) {
+    public static function table($args = array(), $orientation = 'h') {
         
-    }
+        #get the headigs and the data arrays
+        $data = html::getVal($args, 'data');
+        
+        #validate and convert the orientation flag to lower case
+        $orientation = !empty($orientation) && is_string($orientation) ? strtolower($orientation) : 'h';
+        
+        $html = "<table id='" . html::getVal($args, 'id') . "' border='" . html::getVal($args, 'border') . " '>"; 
+        
+        #switch the orientation flag.
+        switch($orientation) {
+            case 'h':
+                
+                if(!empty($data)) {
+                    foreach($data as $item) {
+                        $html .= "<tr>";
+                        foreach($item as $field) {
+                            $html .= "<td>" . $field . "</td>"; 
+                        }
+                        $html .= "</tr>"; 
+                    }
+                }
+                
+                break; 
+        }
+        
+        $html .= '</table>';    
+        
+        return $html; 
+}
     
     
     private static function getVal($args = array(), $val = "") {
