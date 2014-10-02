@@ -1,10 +1,10 @@
 <?php
 #require the csvfile class. 
-require_once('./lib/class.csvfile.php');
+require_once('lib/class.csvfile.php');
 #require the cache class
-require_once('./lib/class.cache.php');
+require_once('lib/class.cache.php');
 #require the html builder class
-require_once('./lib/class.html.php'); 
+require_once('lib/class.html.php'); 
 
 $start = microtime(true);
 
