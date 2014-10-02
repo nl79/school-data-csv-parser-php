@@ -17,7 +17,9 @@ class cache {
     }
     
     public function getJsonData($filename) {
-        return json_decode(file_get_contents($this->_dir . $filename), true);
+        $data = json_decode(file_get_contents($this->_dir . $filename), true);
+          
+        return $data; 
     }
     
     public function cacheHtml($filename, $data) {
