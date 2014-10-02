@@ -9,11 +9,11 @@ require_once('lib/class.html.php');
 $start = microtime(true);
 
 #csv filenames
-$listFile = './data/hd2013.csv'; 
-$headingsFile = './data/hd2013varlist.csv';
+$listFile = 'data/hd2013.csv'; 
+$headingsFile = 'data/hd2013varlist.csv';
 
 #cache filenames
-$cacheDir = './cache/'; 
+$cacheDir = 'cache/'; 
 $listFileCache = 'hd2013.cache.json';
 $headingsFileCache = 'hd2013varlist.cache.json';
 
