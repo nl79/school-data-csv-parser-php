@@ -29,8 +29,8 @@ if(file_exists($cacheDir . $listFileCache) &&
    file_exists($cacheDir . $headingsFileCache)) {
 	#open the files and decode json.
 	$schoolList = $cache->getJsonData($listFileCache);
-	$headingList = $cache->getJsonData($headingsFileCache); 
-
+	$headingList = $cache->getJsonData($headingsFileCache);
+	
 } else {
 
 	#open the files.
@@ -39,8 +39,8 @@ if(file_exists($cacheDir . $listFileCache) &&
 		#load the list csv. 
 		$listcsv = new csvfile($listFile, true);
 		
-		$schoolList = $listcsv->getData(); 
-
+		$schoolList = $listcsv->getData();
+		
 		#load the headings csv. 
 		$headingcsv = new csvfile($headingsFile, true);
 		

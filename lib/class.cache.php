@@ -11,7 +11,7 @@ class cache {
     
     public function cacheJson($filename, &$data) {      
         $json = json_encode($data);
-        
+    
         file_put_contents($this->_dir . $filename, $json);
 
     }
