@@ -24,6 +24,7 @@ $cache = new cache($cacheDir);
 $schoolList = null;
 $headingList = null; 
 
+/*
 #check if the files are cached
 if(file_exists($cacheDir . $listFileCache) &&
    file_exists($cacheDir . $headingsFileCache)) {
@@ -58,9 +59,19 @@ if(file_exists($cacheDir . $listFileCache) &&
 		echo($e->getMessage()); 
 	}
 }
-
-#if the unitid is set, load the headings svc
+*/
+#load the list csv. 
+$listcsv = new csvfile($listFile, true);
+$schoolList = $listcsv->getData();
+	
 if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
+	
+	#load the headings csv. 
+	$headingcsv = new csvfile($headingsFile, true);
+	$headingList = $headingcsv->getData();
+	
+	
+	#if the unitid is set, load the headings svc
 	
 	$fieldName = 'UNITID'; 
 	
@@ -123,11 +134,6 @@ function buildUL($list) {
 	
 	foreach($list as $row) {
 	
-		/*
-		$html .= "<li class='li-item'>" .
-			html::a(array('href' => "./?UNITID=" . $row['UNITID'],
-				      'data' => $row['INSTNM'])) . "</li>";
-		*/
 		#build the anchor tag.
 		$a = html::a(array('href' => "./?UNITID=" . $row['UNITID'],
 				      'data' => $row['INSTNM']));
@@ -157,7 +163,10 @@ function buildUL($list) {
 	<body>
 		<h1>School List</h1>
 		<div id='div-school-list'>
-			<?php if(file_exists($cacheDir . $ulHmlFile)) { include($cacheDir . $ulHmlFile); } ?>
+			<?php #if(file_exists($cacheDir . $ulHmlFile)) { include($cacheDir . $ulHmlFile); }
+				#build the ul
+				echo(buildUL($schoolList)); 
+			?>
 			
 		</div>
 		
