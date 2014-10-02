@@ -19,7 +19,7 @@ class html {
     
     public static function li($args = array()) {
         
-        $html = "<li class='" . html::getVal($args, 'class') . "'>" . html::getVal($args, 'data') . "</li>";
+        $html = "<li id='" . html::getVal($args, 'id') . "' class='" . html::getVal($args, 'class') . "'>" . html::getVal($args, 'data') . "</li>";
         
         return $html; 
     }
