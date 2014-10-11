@@ -53,24 +53,7 @@ class index extends controller{
                 
                 #combine the headings and the record array.
                 $record = array_combine($headings, $record); 
-                
-                /*
-                #merge the record and the headings into a single array. 
-                if(!empty($record) && !empty($headings)) {
-                        $dataArray = array(); 
-                        
-                        #get the row count. 
-                        $count = count($record);
-                        
-                        #loop and merge the arrays. 
-                        for($i = 0; $i < $count; $i++ ) {
-                                
-                                #build a new array and add it to the dataArray
-                                $dataArray[] = array(array_shift($headings) , array_shift($record)); 
-                        }
-                        $vData['record'] = $dataArray; 
-                }
-                */
+
                 $vData['record'] = array($record); 
         }
         

@@ -73,7 +73,7 @@ class html {
             
             for($i = 0; $i <= $count; $i++) {
                 
-                $html .= '<th>1</th>'; 
+                $html .= '<th></th>'; 
             }
             
             $html .= "</tr></thead>";
