@@ -1,17 +1,24 @@
 <?php
 namespace controller;
 
-class index {
+class index extends controller{
     
-    private function indexAction () {
+    protected function indexAction () {
+        
         #csv filenames
         $listFile = 'data/hd2013.csv'; 
         $headingsFile = 'data/hd2013varlist.csv';
         
         #load the school list csv. 
-        $listcsv = new csvfile($listFile, true);
+        $listcsv = new \library\csvfile($listFile, true);
+        
         $schoolList = $listcsv->getData();
-                
+        
+        #build the view
+        $vName = '\\view\\' . $this->_action;
+        
+        $view = new $vName();
+        
         if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
                 
                 #load the headings csv. 
@@ -62,9 +69,7 @@ class index {
                         exit; 
                 }
         }
-        
-        echo(microtime(true) - $start);
-        
+         
         function buildUL($list) {
                 $html = '';
                 
@@ -85,6 +90,10 @@ class index {
                 
                 return $html; 
         }
+    }
+    
+    protected function infoAction() {
+        
     }
 
 }

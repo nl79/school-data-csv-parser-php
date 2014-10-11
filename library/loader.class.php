@@ -10,25 +10,22 @@ class loader {
         $parts = explode('\\', $class);
         
         #build the path
-        $filepath = implode(DIRECTORY_SEPARATOR, $parts);
+        $filepath = '.' . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $parts);
         
         #add the extension
-        $filepath .= '.class.php'; 
-        
+        $filepath .= '.class.php';
+            
         #check if the file exists.
         if(file_exists($filepath)) {
-            
+             
             #include the file 
             include_once($filepath);
             
-            
+            #return true; 
             return true; 
         }
         
         #return false. 
-        return false; 
-        
-         
+        return false;    
     }
-    
 }
