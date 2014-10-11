@@ -33,7 +33,15 @@ abstract class view {
     }
     
     public function __destruct() {
-        $html = $this->_output; 
+        $html = $this->_output;
+
+        #if its an ajax call. do not load the index file and just echo out the htmls
+        if(isset($_REQUEST['ajax']) && $_REQUEST['ajax'] == 'ajax') {
+            echo($html);
+            exit; 
+        }
+        
+        #include the template file. 
         include('./public/index.phtml');
         
     }
