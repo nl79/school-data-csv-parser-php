@@ -41,20 +41,20 @@ class index extends controller{
                 #extract every varTitle field from the headings collection
                 $headings = $headingcsv->getFieldsByName('varTitle'); 
                 
-                $fieldName = 'UNITID'; 
-                
                 #get the unit id. 
-                $id = $_REQUEST[$fieldName];
+                $id = isset($_REQUEST['id']) && is_numeric($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+                                                           
+                $record = $schoolList[$id];
                 
-                //get the school record based on the unitid 
-                $record = null;
-         
-                #loop throught and find the record. 
-                foreach($schoolList as $row) {
-                        
-                        if($row[$fieldName] == $id) { $record = $row; }
-                }
+                /*
+                 * check if the record UNITID matches the UNITID supplied with the query string
+                 * to make sure the right record was retrieved.
+                 */
                 
+                #combine the headings and the record array.
+                $record = array_combine($headings, $record); 
+                
+                /*
                 #merge the record and the headings into a single array. 
                 if(!empty($record) && !empty($headings)) {
                         $dataArray = array(); 
@@ -70,6 +70,8 @@ class index extends controller{
                         }
                         $vData['record'] = $dataArray; 
                 }
+                */
+                $vData['record'] = array($record); 
         }
         
         $view = new \view\index($this->_action, $vData);
