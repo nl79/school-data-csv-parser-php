@@ -14,11 +14,9 @@ class index extends controller{
         
         $schoolList = $listcsv->getData();
         
-        #build the view
-        $vName = '\\view\\' . $this->_action;
-        
-        $view = new $vName();
-        
+        #view object data array. 
+        $vData = array('list' => $schoolList); 
+          
         if(isset($_REQUEST['UNITID']) && is_numeric($_REQUEST['UNITID'])) {
                 
                 #load the headings csv. 
@@ -55,11 +53,13 @@ class index extends controller{
                                 #build a new array and add it to the dataArray
                                 $dataArray[] = array(array_shift($headings) , array_shift($record)); 
                         }
-                        
+                        /*
                         //build the table html
                         $tableHtml = html::table(array('id'=>'table-school-data',
                                            'border' => '1',
                                            'data' => $dataArray), 'h');
+                        */
+                        $vData['record'] = $dataArray; 
                 }
                 
                 
@@ -69,27 +69,8 @@ class index extends controller{
                         exit; 
                 }
         }
-         
-        function buildUL($list) {
-                $html = '';
-                
-                $html .= "<ul id='ul-school-list'>"; 
-                
-                foreach($list as $row) {
-                
-                        #build the anchor tag.
-                        $a = html::a(array('href' => "./?UNITID=" . $row['UNITID'],
-                                              'data' => $row['INSTNM']));
-                        $li = html::li(array('class' => 'li-item',
-                                             'data' => $a)); 
-                        $html .= $li; 
-                        
-                }
-                
-                $html .= "</ul>"; 
-                
-                return $html; 
-        }
+        
+        $view = new \view\index($this->_action, $vData);
     }
     
     protected function infoAction() {
